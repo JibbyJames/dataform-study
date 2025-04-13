@@ -1,0 +1,13 @@
+config {
+    type: "assertion"
+}
+
+SELECT 1 AS row_count
+FROM UNNEST([1]) AS dummy
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM `dataform-jjb.sources.INFORMATION_SCHEMA.TABLES`
+  WHERE table_schema = 'sources'
+    AND table_catalog = 'dataform-jjb'
+    AND table_name = CONCAT('nike_', '${dataform.projectConfig.vars.shardSuffix}')
+)

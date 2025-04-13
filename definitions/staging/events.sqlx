@@ -2,18 +2,24 @@ config {
   type: "incremental",
   tags:["staging"],
   schema:"dataform_staging",
+
   columns: {
     date: "The date of the event",
     timestamp: "The timestamp"
   },
+
   bigquery: {
     partitionBy: "date",
     requirePartitionFilter: true 
-  }
+  },
+
+  dependencies: ["sharded_tables_exist"]
 }
 
 SELECT
   DATE(date) AS date,
   date as timestamp
 FROM
-  `dataform-jjb.sources.nike_20250320`
+  `dataform-jjb.sources.nike_*`
+WHERE
+  _TABLE_SUFFIX = "${dataform.projectConfig.vars.shardSuffix}"

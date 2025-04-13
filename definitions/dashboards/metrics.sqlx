@@ -1,0 +1,26 @@
+config {
+  type: "incremental",
+  tags:["dashboards"],
+  schema:"dataform_dashboards",
+
+  columns: {
+    date: "The date of the event",
+    row_count: "Count of rows"
+  },
+
+  bigquery: {
+    partitionBy: "date",
+    requirePartitionFilter: true 
+  },
+}
+
+SELECT
+  date,
+  COUNT(*) AS row_count
+FROM
+  ${ref("events")}
+WHERE
+  date = PARSE_DATE("%Y%m%d","${dataform.projectConfig.vars.shardSuffix}")
+GROUP BY
+  1
+

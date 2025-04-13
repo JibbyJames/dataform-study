@@ -1,0 +1,7 @@
+config {
+    type: "assertion"
+}
+
+SELECT 1 row_count
+FROM UNNEST([1]) AS dummy
+WHERE FALSE
