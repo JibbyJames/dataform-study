@@ -4,4 +4,5 @@ defaultDataset: dataform
 defaultAssertionDataset: dataform_assertions
 dataformCoreVersion: 3.0.0
 vars:
-  shardSuffix: YYYYMMDD
+  startDate: YYYY-MM-DD
+  endDate: YYYY-MM-DD

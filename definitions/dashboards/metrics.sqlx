@@ -2,6 +2,7 @@ config {
   type: "incremental",
   tags:["dashboards"],
   schema:"dataform_dashboards",
+  dependOnDependencyAssertions: true,
 
   columns: {
     date: "The date of the event",
@@ -12,6 +13,8 @@ config {
     partitionBy: "date",
     requirePartitionFilter: true 
   },
+
+  
 }
 
 SELECT
@@ -20,7 +23,8 @@ SELECT
 FROM
   ${ref("events")}
 WHERE
-  date = PARSE_DATE("%Y%m%d","${dataform.projectConfig.vars.shardSuffix}")
+  date BETWEEN "${dataform.projectConfig.vars.startDate}"
+    AND "${dataform.projectConfig.vars.endDate}"
 GROUP BY
   1
 

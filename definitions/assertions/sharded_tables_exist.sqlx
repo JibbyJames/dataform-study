@@ -2,12 +2,35 @@ config {
     type: "assertion"
 }
 
-SELECT 1 AS row_count
-FROM UNNEST([1]) AS dummy
-WHERE NOT EXISTS (
-  SELECT 1
-  FROM `dataform-jjb.sources.INFORMATION_SCHEMA.TABLES`
-  WHERE table_schema = 'sources'
+WITH expected_dates AS (
+  SELECT
+    FORMAT_DATE('%Y%m%d', d) AS date_suffix
+  FROM
+    UNNEST(GENERATE_DATE_ARRAY(
+      DATE('${dataform.projectConfig.vars.startDate}'),
+      DATE('${dataform.projectConfig.vars.endDate}'),
+      INTERVAL 1 DAY
+    )) AS d
+),
+existing_tables AS (
+  SELECT
+    REPLACE(table_name, 'nike_', '') AS date_suffix
+  FROM
+    `dataform-jjb.sources.INFORMATION_SCHEMA.TABLES`
+  WHERE
+    table_schema = 'sources'
     AND table_catalog = 'dataform-jjb'
-    AND table_name = CONCAT('nike_', '${dataform.projectConfig.vars.shardSuffix}')
+    AND STARTS_WITH(table_name, 'nike_')
 )
+
+SELECT
+  ed.date_suffix
+FROM
+  expected_dates ed
+LEFT JOIN
+  existing_tables et
+ON
+  ed.date_suffix = et.date_suffix
+WHERE
+  et.date_suffix IS NULL
+

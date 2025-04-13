@@ -1,14 +1,14 @@
-Run a single table and include manual assertions (dependencies).
+Run a single table "events" and include upstream dependencies. This will effectively run the scripts which define those tables, which may result in incremental changes to tables.
 
-    dataform run --vars=shardSuffix=20250320 --actions=events  --include-deps=true
-
-
-Run single table without up and downstream dependencies
-
-    dataform run --vars=shardSuffix=20250320 --actions=metrics
+    dataform run --vars=startDate=2025-03-25,endDate=2025-03-25 --actions=events --include-deps
 
 
+Run single table "events" with up and downstream dependencies.
 
-Run single table and downstream dependencies
+    dataform run --vars=startDate=2025-03-20,endDate=2025-03-20 --actions=events --include-deps --include-dependents
 
-    dataform run --vars=shardSuffix=20250320 --actions=events --include-dependents=true
+
+
+# TODO
+
+ - Add pre_operations script to delete rows with that date prior to running.

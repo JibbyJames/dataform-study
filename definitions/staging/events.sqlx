@@ -22,4 +22,6 @@ SELECT
 FROM
   `dataform-jjb.sources.nike_*`
 WHERE
-  _TABLE_SUFFIX = "${dataform.projectConfig.vars.shardSuffix}"
+  _TABLE_SUFFIX BETWEEN
+    FORMAT_DATE('%Y%m%d', DATE("${dataform.projectConfig.vars.startDate}")) AND
+    FORMAT_DATE('%Y%m%d', DATE("${dataform.projectConfig.vars.endDate}"))
