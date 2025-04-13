@@ -1,0 +1,19 @@
+config {
+  type: "incremental",
+  tags:["staging"],
+  schema:"dataform_staging",
+  columns: {
+    date: "The date of the event",
+    timestamp: "The timestamp"
+  },
+  bigquery: {
+    partitionBy: "date",
+    requirePartitionFilter: true 
+  }
+}
+
+SELECT
+  DATE(date) AS date,
+  date as timestamp
+FROM
+  `dataform-jjb.sources.nike_20250320`
